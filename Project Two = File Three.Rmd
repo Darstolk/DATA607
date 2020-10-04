@@ -1,0 +1,102 @@
+---
+title: "Project Two = File Three"
+author: "Dariusz Siergiejuk"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+# Possible pretty doc themes are:
+#     cayman, architect, tactile, hpstr, leonids
+---
+
+## IS 607 – Project 2
+
+### The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work.
+
+### Your task is to:
+
+(1) Choose any three of the “wide” datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don’t use my Sample Post dataset, since that was used in your Week 6 assignment!) For each of the three chosen datasets:
+(a) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+(b) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+(c) Perform the analysis requested in the discussion item.
+(d) Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+
+(2) Please include in your homework submission, for each of the three chosen datasets:
+(a) The URL to the .Rmd file in your GitHub repository, and
+(b) The URL for your rpubs.com web page.
+
+CSV file has been loaded to github
+
+https://raw.githubusercontent.com/Darstolk/DATA607/main/adult-training.csv
+
+Original file was a text file which was saved as a csv file. The data contained in the csv file will be transformed from a wide set to a long set along with other necessary cleanup where necessary and required to do expedite analysis on the uploaded data set.
+
+Here is a reference to the Internet address that linked the data set and explained methods to tidy the data set. The methods contained in the website was mostly used to understand the data, the only one directly used was selecting the columns with the select function.
+
+https://www.tidyverse.org/
+
+https://r4ds.had.co.nz/
+
+https://github.com/yihui/knitr#readme
+
+### Please note that some of the packages need to be loaded
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+```
+
+
+```{r}
+preparation <- read.table("https://raw.githubusercontent.com/Darstolk/DATA607/main/adult-training.csv", header=FALSE, sep=",")
+
+
+head(preparation)
+```
+## Cleaning and Tranforming
+
+In this stage the data will be cleaned and transformed for the use of the adult training data set. The column original designations will be changed to more meaningful names, removal some of the extra columns and rows with missing, non-existing, or/and not available values will be excluded from further analysis. Head function is utilized to clean data to stand in for observations consisting of Employed, Number, Education, Years of School etc. descriptions.
+
+Changing column names to more meaningful labels.
+
+```{r}
+names(preparation) <- c("age", "Employed","Number", "Education","YearsOfSchool","MaritalStatus","Profession","Relation","Race","Gender","CapitalGain","CapitalLoss","HoursPerWeek","BirthPlace","Salary")
+ 
+head(preparation)
+```
+
+There are fifteen variables in this data set. All variables are captures in columns and correspond to specific observations. Subsets and grouping will be applied on the original variables, with the origin variables being designated and located as explained by the variable names.
+
+```{r}
+Data <- sqldf::sqldf("select age, MaritalStatus, Gender, HoursPerWeek, Salary from training")
+```
+
+
+Now, we would like to inquire on the count of men who not married and at the same time work more than forty hours on weekly basis.
+
+```{r}
+Data <- sqldf::sqldf("select count(*) from training where age >40 and HoursPerWeek >40 and MaritalStatus <> 'Married-civ-spouse'") 
+  
+print(Data)
+```
+
+We can clearly and definitively see here based on our results that the number of the individuals with the above-mentioned characteristics is rather high in our case.
+
+Next, we are going to set out to find out how many men out of those who are married tend to work more than 40 hours a week.
+
+```{r}
+Data <- sqldf::sqldf("select count(*) from training where age >40 and HoursPerWeek >40 and MaritalStatus ='Married-civ-spouse'") 
+  
+print(Data)
+```
+
+
+The number of men married and working more than 40 hours a week is non-existent.
+
+
+## Summary
+
+It turns out that for the population of men whose marital status is to be married the likelihood of working beyond forty hours a week is quite and relatively low. This may be caused by things like in-house responsibilities, unreported gig job or source of income on the side and other factors not included in our data set. Thus further analysis of this problem can be required after relevant data become available to us.
