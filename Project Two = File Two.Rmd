@@ -1,0 +1,120 @@
+---
+title: "Project Two = File Two"
+author: "Dariusz Siergiejuk"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+# Possible pretty doc themes are:
+#     cayman, architect, tactile, hpstr, leonids
+---
+
+## IS 607 – Project 2
+
+### The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work.
+
+### Your task is to:
+
+(1) Choose any three of the “wide” datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don’t use my Sample Post dataset, since that was used in your Week 6 assignment!) For each of the three chosen datasets:
+(a) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+(b) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+(c) Perform the analysis requested in the discussion item.
+(d) Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+
+(2) Please include in your homework submission, for each of the three chosen datasets:
+(a) The URL to the .Rmd file in your GitHub repository, and
+(b) The URL for your rpubs.com web page.
+
+CSV file has been loaded to github
+
+https://raw.githubusercontent.com/Darstolk/DATA607/main/diabetes.csv
+
+Original file was a text file which was saved as a csv file. The data contained in the csv file will be transformed from a wide set to a long set along with other necessary cleanup where necessary and required to do expedite analysis on the uploaded data set.
+
+Here is a reference to the Internet address that linked the data set and explained methods to tidy the data set. The methods contained in the website was mostly used to understand the data, the only one directly used was selecting the columns with the select function.
+
+https://www.tidyverse.org/
+
+https://r4ds.had.co.nz/
+
+https://github.com/yihui/knitr#readme
+
+### Please note that some of the packages need to be loaded
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+```
+
+
+```{r}
+diabetes = read.table("https://raw.githubusercontent.com/Darstolk/DATA607/main/diabetes.csv", header=TRUE, sep=",")
+head(diabetes)
+```
+
+
+```{r}
+head(diabetes)
+```
+
+There are nine variables in this data set. All variables are captures in columns and correspond to specific observations. Subsets will be applied on the original variables, with the origin variables being located as designated.
+
+## Cleaning and Tranforming
+
+In this stage the data will be cleaned and transformed for the use of the diabetes data set. The column original designations will be changed to more relevant names, removal some of the extra columns and rows with non-existing values will be executed. Head function is utilized to clean data to stand in for observations consisting of Pregnancies, Glucose, Blood Pressure etc. characteristics.
+
+Changing column names to more meaningful labels.
+
+```{r}
+names(diabetes) <- c("Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin","BMI","DiabetesPedigreeFunction","Age","Outcome")
+
+head(diabetes)
+```
+In this instance we would like to find out the implications of higher incidence of pregnancies and its effects on the possibility of developing diabetes.
+
+
+```{r}
+HighPregna <- sqldf::sqldf("select count(Pregnancies) from diabetes where Pregnancies >=3")
+TotalPregna <- sqldf::sqldf("select count(*) from diabetes")
+
+HighPregna
+```
+
+```{r}
+TotalPregna
+```
+
+```{r}
+Percentage <-HighPregna/TotalPregna
+Percentage
+```
+
+It can be seen that the impact of pregnancies has potentially high impact on developing diabetes in the future and for the same reason should be accounted for in further research.
+
+
+In the next step, we will explore whether age plays any significant role in defining its effect on the development of diabetes.
+
+```{r}
+HighAge <- sqldf::sqldf("select count(Age) from diabetes where Age >=40")
+TotalAge <- sqldf::sqldf("select count(*) from diabetes")
+
+HighAge
+```
+
+```{r}
+TotalAge
+```
+```{r}
+Percentage <-HighAge/TotalAge
+Percentage
+```
+
+Although not as high as in the case of number of pregnancies, age still pays quite significant role in developing deiabetes and therefore should be accounted for in our analysis.
+
+
+## Summary
+
+There is a wide host of factors impacting the possibility of developing medical condition such as diabetes. The two of them that is incidence of pregnancies and the age we briefly discussed here. Other variables tangent to the issue of this growing medical condition in the country could be more meaningfully explored by adding on more data and observations and effectively aggregating the whole matrix of statistically conclusive findings.
