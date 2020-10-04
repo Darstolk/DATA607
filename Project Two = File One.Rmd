@@ -1,0 +1,101 @@
+---
+title: "Project Two = File One"
+author: "Dariusz Siergiejuk"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+# Possible pretty doc themes are:
+#     cayman, architect, tactile, hpstr, leonids
+---
+
+## IS 607 – Project 2
+
+### The goal of this assignment is to give you practice in preparing different datasets for downstream analysis work.
+
+### Your task is to:
+
+(1) Choose any three of the “wide” datasets identified in the Week 6 Discussion items. (You may use your own dataset; please don’t use my Sample Post dataset, since that was used in your Week 6 assignment!) For each of the three chosen datasets:
+(a) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+(b) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+(c) Perform the analysis requested in the discussion item.
+(d) Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions.
+
+(2) Please include in your homework submission, for each of the three chosen datasets:
+(a) The URL to the .Rmd file in your GitHub repository, and
+(b) The URL for your rpubs.com web page.
+
+CSV file has been loaded to github
+
+https://raw.githubusercontent.com/Darstolk/DATA607/main/subway_riders.csv
+
+Original file was a text file which was saved as a csv file. The data contained in the csv file will be transformed from a wide set to a long set along with other necessary cleanup where necessary and required to do expedite analysis on the uploaded data set.
+
+Here is a reference to the Internet address that linked the data set and explained methods to tidy the data set. The methods contained in the website was mostly used to understand the data, the only one directly used was selecting the columns with the select function.
+
+https://www.tidyverse.org/
+
+https://r4ds.had.co.nz/
+
+https://github.com/yihui/knitr#readme
+
+### Please note that some of the packages need to be loaded
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(purrr)
+```
+
+
+```{r}
+riders <- c("https://raw.githubusercontent.com/Darstolk/DATA607/main/subway_riders.csv")
+subway_data <- tbl_df(read_csv(riders))
+```
+
+
+```{r}
+glimpse(subway_data)
+```
+
+There are seven variables in this data set. Borough data will be collected to turn into rows. The same will happen with ridership data. Subset will be applied on origin county, with the origin county being United States of America.
+
+## Cleaning and Tranforming
+
+In this stage the data will be cleaned and transformed for the use of the MTA Ridership data set. The column original designations will be changed to more realistic names, deletion of extra column and row displaying non-existing values. Pivot_longer is utilized to clean data to stand for observations consisting of Borough, Year, and Ridership characteristics.
+
+Changing column names to more meaningful labels.
+
+```{r}
+names(subway_data) <- c("Borough", "Yr2013", "Yr2014", "Yr2015", "Yr2016", "Yr2017", "Yr2018", "IgnoreThisCol")
+
+subway_data <- select(subway_data, -(IgnoreThisCol))
+
+subway_data <- filter(subway_data,!(is.na(Borough)))  # deleting rows disolaying non-existing values
+
+List_of_Boroughs <- subway_data$Borough
+
+subway_change_data <- mutate(subway_data, Diff_2013_to_2018 = Yr2018 - Yr2013,
+                    Pct_Change = (Diff_2013_to_2018 / Yr2013) * 100)
+
+subway_pivot_data <- pivot_longer(subway_data, starts_with("Yr"), names_to = "Year", values_to = "Ridership")
+```
+
+
+
+```{r}
+ggplot(data = subway_pivot_data, mapping = aes(x=Year, y=Ridership)) +
+  geom_point(mapping = aes(shape = Borough))
+```
+
+```{r}
+ggplot(data=subway_change_data, mapping = aes(x=Borough, y=Pct_Change)) +
+  geom_point(mapping = aes(shape = Borough))
+```
+
+## Summary
+
+Through more in-depth analysis, we can gain further knowledge and familiarity for the reasons as to why some boroughs in the New York City e.g. the Bronx experience decline in its ridership. Historically, the New York City is not a safe place to live and work, thus these factors may shed some light to what is going in the context of the ridership rates and their declining rates in certain parts of the New York City. On the other hand, the technology can play some role. I personally started reducing my commute frequency to the office way back in the nineties of the last century by telecommuting [I guess obsolete term nowadays] due to the high crime rates in the New York City thorughout the nineties.
