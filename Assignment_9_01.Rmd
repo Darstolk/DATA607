@@ -1,0 +1,68 @@
+---
+title: "Assignment 9"
+author: "Dariusz Siergiejuk"
+date: "10/24/2020"
+output: html_document
+---
+
+### Assignment 9
+
+The New York Times web site provides a rich set of API's, as described here: https://developer.nytimes.com/get-started You’ll need to start by signing up for an API key. Your task is to choose one of the New York Times API's, construct an interface in R to read in the JSON data, and transform it to an R data frame.
+
+#### Required Libraries
+
+```{r, echo = FALSE}
+library(jsonlite)
+library(knitr)
+library(formattable)
+```
+
+#### Registering for an API Key.
+
+To request for NY Times API key, register at https://developer.nytimes.com/accounts/create.
+
+The information about creating query and url to be used can be found here - https://developer.nytimes.com/get-started.
+
+Web API and URL
+
+#### Reading in Movie Reviews API.
+
+```{r, echo = TRUE}
+#url <- GET("https://api.nytimes.com/svc/movies/v2/reviews/search.json", query = list(api_key = "xvr0sP3mu5L2qin3iAW5XFs2DK0GoHju"))
+#url
+
+#APIMovie <- fromJSON("https://api.nytimes.com/svc/movies/v2/reviews/search.json?api_key=xvr0sP3mu5L2qin3iAW5XFs2DK0GoHju") 
+#APIMovie_table <- as.data.frame(APIMovie)
+#APIMovie_table
+```
+
+#### Reading the Jason Data In R and Converting it into a Data Frame.
+
+```{r, echo = TRUE}
+#url <- GET("https://api.nytimes.com/svc/search/v2/articlesearch.json", #query = list(api_key = "e6151b6f4d364acf8d6e5d8af9ef7072"))
+#url
+
+#APIArticle <- fromJSON("https://api.nytimes.com/svc/search/v2/articlesearch.json?api_key=e6151b6f4d364acf8d6e5d8af9ef7072") 
+#APIArticle_table <- as.data.frame(APIArticle)
+#APIArticle_table
+```
+
+#### Reading in Top Stories API
+
+```{r, echo = TRUE}
+#url <- GET("http://api.nytimes.com/svc/topstories/v2/home.json", query = list(api_key = "e6151b6f4d364acf8d6e5d8af9ef7072"))
+#url
+
+#APITopStories <- fromJSON("http://api.nytimes.com/svc/topstories/v2/home.json?api_key=e6151b6f4d364acf8d6e5d8af9ef7072") 
+#APITopStories_table <- as.data.frame(APITopStories)
+#APITopStories_table
+```
+
+
+```{r setup, echo = TRUE}
+#as.datatable(formattable(df))
+```
+
+#### Conclusion
+
+We were able to obtain some updated information on movies from the New York Times web site. According to the web site we can update our search or query up to ten times per minute or 4000 times a day, which pretty much allows us to stay current. 
